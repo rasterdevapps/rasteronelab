@@ -141,7 +141,7 @@ Quality control core:
 - [ ] Westgard rules engine (all 6 rules)
 - [ ] QC status determination
 - [ ] Block authorization on QC failure
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests for each Westgard rule
 
 ---
@@ -232,7 +232,7 @@ Event-driven notifications:
 - [ ] Notification log entity
 - [ ] Delivery status tracking
 - [ ] Retry management
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Integration tests
 
 ---
@@ -259,7 +259,7 @@ Reagent and consumables tracking:
 - [ ] Expiry monitoring
 - [ ] Purchase order workflow
 - [ ] GRN processing
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -363,7 +363,7 @@ Inventory screens (Screens #118-129):
 
 ### Database
 
-#### LIS-115: Create Liquibase migrations for Report, QC, Notification, and Inventory tables
+#### LIS-115: Create Flyway migrations for Report, QC, Notification, and Inventory tables
 **Labels:** `backend`, `database`
 **Description:**
 Phase 7 database migrations:

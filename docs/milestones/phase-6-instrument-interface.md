@@ -84,7 +84,7 @@ Map instrument-specific codes to LIS parameter codes:
 - [ ] Unit conversion support
 - [ ] Roche Cobas mapping configuration
 - [ ] Sysmex XN-1000 mapping configuration
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -231,7 +231,7 @@ Monitoring screens (Screens #114-117):
 
 ### Database
 
-#### LIS-099: Create Liquibase migrations for Instrument module tables
+#### LIS-099: Create Flyway migrations for Instrument module tables
 **Labels:** `backend`, `database`
 **Description:**
 Phase 6 database migrations:

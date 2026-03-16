@@ -50,7 +50,7 @@ Result entry foundation:
 - [ ] Result state machine
 - [ ] Entry and update endpoints
 - [ ] Worklist query by department
-- [ ] Liquibase migration (partitioned by branch_id)
+- [ ] Flyway migration (partitioned by branch_id)
 - [ ] Unit + integration tests
 
 ---
@@ -386,7 +386,7 @@ Clinical review screens (Screens #67-68):
 
 ### Database
 
-#### LIS-086: Create Liquibase migrations for Result module tables
+#### LIS-086: Create Flyway migrations for Result module tables
 **Labels:** `backend`, `database`
 **Description:**
 Phase 5 database migrations:

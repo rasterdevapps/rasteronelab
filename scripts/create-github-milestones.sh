@@ -287,8 +287,8 @@ create_issue \
     "infrastructure,phase-1"
 
 create_issue \
-    "LIS-015: Set up Liquibase migration framework and core tables" \
-    "Liquibase master changelog per module. Core tables: branch, organization, audit_trail (monthly partitioned). Naming: {YYYYMMDD}{HH}{NNN}-{action}-{entity}.xml.
+    "LIS-015: Set up Flyway migration framework and core tables" \
+    "Flyway versioned SQL migrations per module. Core tables: branch, organization, audit_trail (monthly partitioned). Naming: V{YYYYMMDD_HHmm}__{description}.sql.
 
 **Module:** lis-core, all modules
 **Ref:** docs/development/project-scaffolding.md, docs/architecture/database-schema.md" \
@@ -303,7 +303,7 @@ echo "Creating Phase 2 issues..."
 
 create_issue \
     "LIS-016: Implement Organization CRUD API" \
-    "Organization entity with name, code, address, contact, logo. Uses org_id (NOT branch_id). SUPER_ADMIN only. Liquibase migration.
+    "Organization entity with name, code, address, contact, logo. Uses org_id (NOT branch_id). SUPER_ADMIN only. Flyway migration.
 
 **Module:** lis-admin
 **Ref:** docs/domain/masters/02-organization-masters.md" \
@@ -455,7 +455,7 @@ create_issue \
     "frontend,phase-2"
 
 create_issue \
-    "LIS-033: Create Liquibase migrations for all Phase 2 tables" \
+    "LIS-033: Create Flyway migrations for all Phase 2 tables" \
     "Migrations for Organization, Branch, Department, Test, Parameter, ReferenceRange, Panel, PriceCatalog, Doctor, Configuration tables, Antibiotic, Microorganism. All with BaseEntity columns + indexes.
 
 **Module:** lis-admin
@@ -623,7 +623,7 @@ create_issue \
     "backend,phase-3"
 
 create_issue \
-    "LIS-051: Create Liquibase migrations for Patient, Order, and Billing tables" \
+    "LIS-051: Create Flyway migrations for Patient, Order, and Billing tables" \
     "Patient, PatientVisit, TestOrder, OrderLineItem, Invoice, Payment, Refund, CreditAccount, NumberSeries tables.
 
 **Module:** lis-patient, lis-order, lis-billing
@@ -773,7 +773,7 @@ create_issue \
     "frontend,infrastructure,phase-4"
 
 create_issue \
-    "LIS-067: Create Liquibase migrations for Sample Management tables" \
+    "LIS-067: Create Flyway migrations for Sample Management tables" \
     "SampleCollection, SampleTest, SampleAliquot, SampleStorage, SampleTransfer, SampleTracking, RejectionReason tables.
 
 **Module:** lis-sample
@@ -950,7 +950,7 @@ create_issue \
     "frontend,phase-5"
 
 create_issue \
-    "LIS-086: Create Liquibase migrations for Result module tables" \
+    "LIS-086: Create Flyway migrations for Result module tables" \
     "TestResult (LIST partitioned by branch_id), ResultValidation, CriticalValueLog, DeltaCheckResult, ResultAmendment, CultureResult, AntibioticSensitivity, HistopathologyResult tables.
 
 **Module:** lis-result
@@ -1073,7 +1073,7 @@ create_issue \
     "frontend,phase-6"
 
 create_issue \
-    "LIS-099: Create Liquibase migrations for Instrument module tables" \
+    "LIS-099: Create Flyway migrations for Instrument module tables" \
     "InstrumentConnection, InstrumentParameterMapping, InstrumentResultQueue, ProcessingLog, ErrorLog, Calibration tables.
 
 **Module:** lis-instrument
@@ -1223,7 +1223,7 @@ create_issue \
     "frontend,phase-7"
 
 create_issue \
-    "LIS-115: Create Liquibase migrations for Report, QC, Notification, and Inventory tables" \
+    "LIS-115: Create Flyway migrations for Report, QC, Notification, and Inventory tables" \
     "Report/ReportSection/ReportDelivery. QCMaterial/QCResult/QCRule/CorrectiveAction/EQA. NotificationLog/Template (partitioned). Reagent/StockMovement/Supplier/PurchaseOrder/GRN.
 
 **Module:** lis-report, lis-qc, lis-notification, lis-inventory
@@ -1391,7 +1391,7 @@ create_issue \
     "documentation,phase-8"
 
 create_issue \
-    "LIS-133: Create Liquibase migrations for Phase 8 tables" \
+    "LIS-133: Create Flyway migrations for Phase 8 tables" \
     "HomeCollectionRequest, CollectionSlot, PhlebotomistSchedule. AnalyticsCache (materialized views). Custom report config.
 
 **Module:** various

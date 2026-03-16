@@ -6,7 +6,7 @@
 
 - Complete `lis-admin` module with all master data CRUD
 - Admin Angular screens (25 screens)
-- Liquibase migrations for all admin tables
+- Flyway migrations for all admin tables
 - Master data seeding for initial setup
 
 ## Documentation References
@@ -36,13 +36,13 @@ Create Organization entity and CRUD operations:
 - Organization uses `org_id` (NOT branch_id) since orgs span branches
 - CRUD endpoints: POST/GET/PUT/DELETE `/api/v1/organizations`
 - Only SUPER_ADMIN can manage organizations
-- Liquibase migration for `organizations` table
+- Flyway migration for `organizations` table
 
 **Acceptance Criteria:**
 - [ ] Organization entity, DTO, mapper
 - [ ] OrganizationService with CRUD
 - [ ] OrganizationController with @PreAuthorize
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit + integration tests
 
 ---
@@ -61,7 +61,7 @@ Branch entity and management:
 - [ ] Branch entity, DTO, mapper (MapStruct)
 - [ ] BranchService with CRUD + provisioning
 - [ ] BranchController with @PreAuthorize(SUPER_ADMIN, ORG_ADMIN)
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Branch provisioning integration test
 
 ---
@@ -101,7 +101,7 @@ Test master with full configuration:
 - [ ] Test entity with all relationships
 - [ ] TestService with CRUD + search
 - [ ] TestController with pagination
-- [ ] Liquibase migration with indexes
+- [ ] Flyway migration with indexes
 - [ ] Unit + integration tests
 
 ---
@@ -120,7 +120,7 @@ Parameter configuration as per parameter-configuration.md:
 - [ ] Parameter entity with all fields
 - [ ] ParameterService with CRUD
 - [ ] Parameter data types enum
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -197,7 +197,7 @@ Referring doctor management:
 - [ ] Doctor entity, DTO, mapper
 - [ ] DoctorService with CRUD + search
 - [ ] Doctor-branch mapping
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -357,7 +357,7 @@ Angular screens for configuration masters (Screens #142-154):
 
 ### Database
 
-#### LIS-033: Create Liquibase migrations for all Phase 2 tables
+#### LIS-033: Create Flyway migrations for all Phase 2 tables
 **Labels:** `backend`, `database`
 **Description:**
 Database migrations for admin module:
@@ -383,7 +383,7 @@ Database migrations for admin module:
 - [ ] All master data CRUD APIs functional (55+ endpoints)
 - [ ] All 25 admin Angular screens implemented
 - [ ] Master data seeded for development/testing
-- [ ] Liquibase migrations run cleanly
+- [ ] Flyway migrations run cleanly
 - [ ] 80% test coverage on lis-admin module
 - [ ] API documentation (OpenAPI/Swagger) for all endpoints
 - [ ] Admin screens pass accessibility checks

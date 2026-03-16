@@ -112,7 +112,7 @@ Home collection workflow:
 - [ ] Phlebotomist schedule management
 - [ ] Collection confirmation
 - [ ] Failed collection handling
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -393,7 +393,7 @@ Final documentation:
 
 ### Database
 
-#### LIS-133: Create Liquibase migrations for Phase 8 tables
+#### LIS-133: Create Flyway migrations for Phase 8 tables
 **Labels:** `backend`, `database`
 **Description:**
 Phase 8 database migrations:

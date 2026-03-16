@@ -41,7 +41,7 @@ Sample collection core:
 - [ ] Test-to-tube mapping logic
 - [ ] Sample barcode generation
 - [ ] Order status update on collection
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit + integration tests
 
 ---
@@ -101,7 +101,7 @@ Sample splitting for multi-department testing:
 - [ ] Parent-child tracking
 - [ ] Aliquot barcode generation
 - [ ] Volume tracking
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -261,7 +261,7 @@ Barcode scanner hardware integration:
 
 ### Database
 
-#### LIS-067: Create Liquibase migrations for Sample Management tables
+#### LIS-067: Create Flyway migrations for Sample Management tables
 **Labels:** `backend`, `database`
 **Description:**
 Phase 4 database migrations:

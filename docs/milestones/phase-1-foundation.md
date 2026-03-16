@@ -311,19 +311,19 @@ Multi-stage Dockerfiles:
 
 ### Database
 
-#### LIS-015: Set up Liquibase migration framework and core tables
+#### LIS-015: Set up Flyway migration framework and core tables
 **Labels:** `backend`, `database`
 **Description:**
 Initialize database migration framework:
-- Liquibase master changelog per module
-- Naming convention: `{YYYYMMDD}{HH}{NNN}-{action}-{entity}.xml`
+- Flyway versioned SQL migrations per module
+- Naming convention: `V{YYYYMMDD_HHmm}__{description}.sql`
 - Core tables: `branch`, `organization`, `audit_trail`
 - Standard column pattern on all tables
 - Index naming convention: `idx_{table}_{column}`
 - Partition setup for audit_trail (monthly by changed_at)
 
 **Acceptance Criteria:**
-- [ ] Liquibase configuration in each module
+- [ ] Flyway configuration in each module
 - [ ] Core tables migration scripts
 - [ ] Audit trail table with partitioning
 - [ ] Migration runs cleanly on fresh database

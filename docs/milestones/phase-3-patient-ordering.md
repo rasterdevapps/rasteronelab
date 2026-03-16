@@ -42,7 +42,7 @@ Patient management core:
 - [ ] UHID generation with sequence and locking
 - [ ] Patient search with multiple criteria
 - [ ] PHI audit logging
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit + integration tests
 
 ---
@@ -78,7 +78,7 @@ Visit tracking for each patient encounter:
 - [ ] PatientVisit entity, DTO, mapper
 - [ ] Visit creation on order placement
 - [ ] Visit history with linked orders
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -100,7 +100,7 @@ Order management with state machine:
 - [ ] State machine implementation (Spring Statemachine or custom)
 - [ ] Barcode generation
 - [ ] Order validation (sample requirements)
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit + integration tests
 
 ---
@@ -164,7 +164,7 @@ Auto-generate invoice on order placement:
 - [ ] Pricing calculation engine
 - [ ] Discount application logic
 - [ ] Invoice state machine
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit + integration tests
 
 ---
@@ -186,7 +186,7 @@ Payment processing:
 - [ ] Split payment logic
 - [ ] Partial payment with balance tracking
 - [ ] Receipt generation
-- [ ] Liquibase migration
+- [ ] Flyway migration
 - [ ] Unit tests
 
 ---
@@ -376,7 +376,7 @@ Centralized barcode generation:
 
 ### Database
 
-#### LIS-051: Create Liquibase migrations for Patient, Order, and Billing tables
+#### LIS-051: Create Flyway migrations for Patient, Order, and Billing tables
 **Labels:** `backend`, `database`
 **Description:**
 Phase 3 database migrations:
