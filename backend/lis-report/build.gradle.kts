@@ -25,8 +25,8 @@ dependencies {
     implementation("com.google.zxing:core:3.5.3")
     implementation("com.google.zxing:javase:3.5.3")
 
-    // MinIO client
-    implementation("io.minio:minio:8.5.12")
+    // MinIO client (8.6.0+ fixes XML Tag Value Substitution vulnerability)
+    implementation("io.minio:minio:8.6.0")
 
     // Barcode
     implementation("net.sourceforge.barbecue:barbecue:1.5-beta1")
