@@ -1,4 +1,6 @@
 -- Audit trail table for tracking all data changes
+-- branch_id has no FK constraint: audit records must persist even if branch is deleted,
+-- and SUPER_ADMIN operations may span branches.
 CREATE TABLE audit_trail (
     id UUID PRIMARY KEY,
     branch_id UUID NOT NULL,

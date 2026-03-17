@@ -83,8 +83,8 @@ public class BranchInterceptor implements HandlerInterceptor {
         }
 
         if (!(authentication.getPrincipal() instanceof Jwt jwt)) {
-            log.debug("Non-JWT authentication, skipping branch validation");
-            return;
+            log.warn("Non-JWT authentication detected, denying branch access for security");
+            throw new BranchAccessDeniedException("Branch validation requires JWT authentication");
         }
 
         List<String> branchIds = jwt.getClaimAsStringList("branchIds");

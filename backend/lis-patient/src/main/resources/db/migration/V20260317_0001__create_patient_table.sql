@@ -23,8 +23,8 @@ CREATE TABLE patient (
     pincode VARCHAR(20),
     nationality VARCHAR(100) DEFAULT 'Indian',
     blood_group VARCHAR(10),
-    referred_by_doctor_id UUID,
-    org_id UUID,
+    referred_by_doctor_id UUID, -- FK to doctor table (created in Phase 3)
+    org_id UUID,               -- FK to organization table (cross-module, no FK constraint)
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
