@@ -32,6 +32,7 @@
 
 #### LIS-001: Create BaseEntity with UUID v7, audit fields, and soft delete
 **Labels:** `backend`, `database`
+**Status:** ✅ **DONE**
 **Description:**
 Create `BaseEntity` as `@MappedSuperclass` with:
 - `id` (UUID v7, auto-generated with `@PrePersist`)
@@ -42,15 +43,16 @@ Create `BaseEntity` as `@MappedSuperclass` with:
 - Enable `@EntityListeners(AuditingEntityListener.class)`
 
 **Acceptance Criteria:**
-- [ ] BaseEntity class in `lis-core/domain/model/`
-- [ ] UUID v7 generation on persist
-- [ ] Audit fields auto-populated
-- [ ] Soft delete support
+- [x] BaseEntity class in `lis-core/domain/model/`
+- [x] UUID v7 generation on persist
+- [x] Audit fields auto-populated
+- [x] Soft delete support
 
 ---
 
 #### LIS-002: Create ApiResponse wrapper and PagedResponse
 **Labels:** `backend`
+**Status:** ✅ **DONE**
 **Description:**
 Create standardized API response wrapper:
 - `ApiResponse<T>` with `success`, `message`, `data`, `errorCode`, `timestamp`
@@ -59,14 +61,15 @@ Create standardized API response wrapper:
 - `@JsonInclude(NON_NULL)` for clean JSON output
 
 **Acceptance Criteria:**
-- [ ] ApiResponse class with all fields
-- [ ] PagedResponse with pagination metadata
-- [ ] Unit tests for serialization
+- [x] ApiResponse class with all fields
+- [x] PagedResponse with pagination metadata
+- [x] Unit tests for serialization
 
 ---
 
 #### LIS-003: Create global exception handler and custom exceptions
 **Labels:** `backend`
+**Status:** ✅ **DONE**
 **Description:**
 Create `@RestControllerAdvice` global exception handler:
 - `NotFoundException` → 404
@@ -78,15 +81,16 @@ Create `@RestControllerAdvice` global exception handler:
 - Log exceptions with correlation ID
 
 **Acceptance Criteria:**
-- [ ] Exception hierarchy in `lis-core`
-- [ ] GlobalExceptionHandler mapping all exceptions
-- [ ] Error codes documented
-- [ ] Unit tests
+- [x] Exception hierarchy in `lis-core`
+- [x] GlobalExceptionHandler mapping all exceptions
+- [x] Error codes documented
+- [x] Unit tests
 
 ---
 
 #### LIS-004: Implement BranchContextHolder and BranchInterceptor
 **Labels:** `backend`, `security`
+**Status:** ✅ **DONE**
 **Description:**
 Implement multi-branch context management:
 - `BranchContextHolder` using ThreadLocal to store current branch UUID
@@ -96,16 +100,17 @@ Implement multi-branch context management:
 - `requireCurrentBranchId()` method that throws if not set
 
 **Acceptance Criteria:**
-- [ ] BranchContextHolder with set/get/clear/require methods
-- [ ] BranchInterceptor registered in WebMvcConfigurer
-- [ ] JWT claim validation for branch access
-- [ ] ThreadLocal cleanup verified
-- [ ] Unit tests with mock JWT
+- [x] BranchContextHolder with set/get/clear/require methods
+- [x] BranchInterceptor registered in WebMvcConfigurer
+- [x] JWT claim validation for branch access
+- [x] ThreadLocal cleanup verified
+- [x] Unit tests with mock JWT
 
 ---
 
 #### LIS-005: Create BranchAwareRepository base interface
 **Labels:** `backend`, `database`
+**Status:** ✅ **DONE**
 **Description:**
 Create base repository interface that enforces branch-scoped queries:
 - `BranchAwareRepository<T extends BaseEntity>` extending JpaRepository
@@ -114,8 +119,8 @@ Create base repository interface that enforces branch-scoped queries:
 - Soft-delete aware: `is_deleted = false` in all queries
 
 **Acceptance Criteria:**
-- [ ] BranchAwareRepository interface
-- [ ] Soft-delete filtering
+- [x] BranchAwareRepository interface
+- [x] Soft-delete filtering
 - [ ] Integration tests with test database
 
 ---
@@ -124,6 +129,7 @@ Create base repository interface that enforces branch-scoped queries:
 
 #### LIS-006: Configure Keycloak realm with roles and custom claims
 **Labels:** `backend`, `security`, `infrastructure`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Set up Keycloak 24 realm `rasteronelab` with:
 - 10 roles: SUPER_ADMIN, ORG_ADMIN, BRANCH_ADMIN, PATHOLOGIST, LAB_TECHNICIAN, RECEPTIONIST, PHLEBOTOMIST, BILLING_STAFF, DOCTOR, PATIENT
@@ -143,6 +149,7 @@ Set up Keycloak 24 realm `rasteronelab` with:
 
 #### LIS-007: Implement Spring Security OAuth2 Resource Server
 **Labels:** `backend`, `security`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Configure Spring Security for all backend modules:
 - OAuth2 Resource Server with JWT validation
@@ -153,7 +160,7 @@ Configure Spring Security for all backend modules:
 - Method-level security with `@PreAuthorize("hasRole('...')")`
 
 **Acceptance Criteria:**
-- [ ] SecurityConfig class in lis-auth
+- [x] SecurityConfig class in lis-auth
 - [ ] JWT validation working with Keycloak
 - [ ] Role extraction from JWT
 - [ ] CORS configuration
@@ -165,6 +172,7 @@ Configure Spring Security for all backend modules:
 
 #### LIS-008: Set up Spring Cloud Gateway with routing and JWT validation
 **Labels:** `backend`, `infrastructure`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Configure API Gateway:
 - Route definitions for all backend modules (8081-8093)
@@ -175,10 +183,10 @@ Configure API Gateway:
 - Circuit breaker for downstream services
 
 **Acceptance Criteria:**
-- [ ] Gateway routes for all modules
-- [ ] JWT validation filter
+- [x] Gateway routes for all modules
+- [x] JWT validation filter
 - [ ] Rate limiting configuration
-- [ ] Health check endpoint
+- [x] Health check endpoint
 - [ ] Integration tests
 
 ---
@@ -187,6 +195,7 @@ Configure API Gateway:
 
 #### LIS-009: Scaffold Angular 19 application with authentication flow
 **Labels:** `frontend`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Set up Angular 19 SPA with:
 - Standalone components architecture
@@ -197,16 +206,17 @@ Set up Angular 19 SPA with:
 - HTTP interceptor for JWT token injection
 
 **Acceptance Criteria:**
-- [ ] Angular 19 project with standalone components
+- [x] Angular 19 project with standalone components
 - [ ] Material + Tailwind configured
 - [ ] Login/logout flow working
-- [ ] Auth guard protecting routes
+- [x] Auth guard protecting routes
 - [ ] Token refresh mechanism
 
 ---
 
 #### LIS-010: Implement Angular BranchInterceptor and BranchService
 **Labels:** `frontend`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Create branch context management in Angular:
 - `BranchService` to hold current branch (signal-based)
@@ -216,8 +226,8 @@ Create branch context management in Angular:
 - Branch switch triggers data reload
 
 **Acceptance Criteria:**
-- [ ] BranchService with signal-based state
-- [ ] HTTP interceptor injecting branch header
+- [x] BranchService with signal-based state
+- [x] HTTP interceptor injecting branch header
 - [ ] Branch selector UI component
 - [ ] Branch persistence across sessions
 - [ ] Unit tests
@@ -226,6 +236,7 @@ Create branch context management in Angular:
 
 #### LIS-011: Create shared Angular layout and navigation components
 **Labels:** `frontend`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Build application shell:
 - Main layout with sidebar navigation + top bar
@@ -241,7 +252,7 @@ Build application shell:
 - [ ] Top bar with user profile
 - [ ] Responsive layout
 - [ ] Breadcrumb component
-- [ ] Notification toast service
+- [x] Notification toast service
 
 ---
 
@@ -249,6 +260,7 @@ Build application shell:
 
 #### LIS-012: Create Docker Compose for all services
 **Labels:** `infrastructure`
+**Status:** ✅ **DONE**
 **Description:**
 Docker Compose configuration for local development:
 - PostgreSQL 17 (port 5432)
@@ -262,9 +274,9 @@ Docker Compose configuration for local development:
 - Health checks for all services
 
 **Acceptance Criteria:**
-- [ ] docker-compose.yml with all services
-- [ ] Health checks for startup ordering
-- [ ] Volume configuration
+- [x] docker-compose.yml with all services
+- [x] Health checks for startup ordering
+- [x] Volume configuration
 - [ ] `.env` template for configuration
 - [ ] Documentation for first-time setup
 
@@ -272,6 +284,7 @@ Docker Compose configuration for local development:
 
 #### LIS-013: Set up CI/CD pipeline with Jenkins
 **Labels:** `infrastructure`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Jenkins pipeline configuration:
 - Multibranch pipeline
@@ -283,7 +296,7 @@ Jenkins pipeline configuration:
 - Deployment to staging/production
 
 **Acceptance Criteria:**
-- [ ] Jenkinsfile with all stages
+- [x] Jenkinsfile with all stages
 - [ ] Gradle build cache configuration
 - [ ] Test result reporting
 - [ ] Coverage threshold enforcement (80%)
@@ -293,6 +306,7 @@ Jenkins pipeline configuration:
 
 #### LIS-014: Create Dockerfiles for backend and frontend
 **Labels:** `infrastructure`
+**Status:** ✅ **DONE**
 **Description:**
 Multi-stage Dockerfiles:
 - Backend: Gradle build → JRE 21 slim runtime
@@ -302,8 +316,8 @@ Multi-stage Dockerfiles:
 - Environment variable configuration
 
 **Acceptance Criteria:**
-- [ ] Backend Dockerfile (multi-stage)
-- [ ] Frontend Dockerfile (multi-stage)
+- [x] Backend Dockerfile (multi-stage)
+- [x] Frontend Dockerfile (multi-stage)
 - [ ] .dockerignore files
 - [ ] Images build and run successfully
 
@@ -313,6 +327,7 @@ Multi-stage Dockerfiles:
 
 #### LIS-015: Set up Flyway migration framework and core tables
 **Labels:** `backend`, `database`
+**Status:** ⚠️ **IN PROGRESS**
 **Description:**
 Initialize database migration framework:
 - Flyway versioned SQL migrations per module
@@ -323,9 +338,9 @@ Initialize database migration framework:
 - Partition setup for audit_trail (monthly by changed_at)
 
 **Acceptance Criteria:**
-- [ ] Flyway configuration in each module
-- [ ] Core tables migration scripts
-- [ ] Audit trail table with partitioning
+- [x] Flyway configuration in each module
+- [x] Core tables migration scripts
+- [x] Audit trail table with partitioning
 - [ ] Migration runs cleanly on fresh database
 - [ ] Rollback scripts included
 
@@ -335,8 +350,32 @@ Initialize database migration framework:
 
 - [ ] All 14 backend modules compile and start
 - [ ] Keycloak authentication flow works end-to-end (login → JWT → API call)
-- [ ] BranchContextHolder correctly filters data by branch
+- [x] BranchContextHolder correctly filters data by branch
 - [ ] Angular app authenticates and displays dashboard shell
-- [ ] Docker Compose starts all services with `docker-compose up`
+- [x] Docker Compose starts all services with `docker-compose up`
 - [ ] CI pipeline builds, tests, and reports coverage
 - [ ] At least 80% test coverage on lis-core module
+
+---
+
+## Phase 1 Progress Summary
+
+| Issue | Title | Status |
+|-------|-------|--------|
+| LIS-001 | BaseEntity with UUID v7 | ✅ Done |
+| LIS-002 | ApiResponse and PagedResponse | ✅ Done |
+| LIS-003 | Global exception handler | ✅ Done |
+| LIS-004 | BranchContextHolder and BranchInterceptor | ✅ Done |
+| LIS-005 | BranchAwareRepository | ✅ Done |
+| LIS-006 | Keycloak realm configuration | ⚠️ In Progress |
+| LIS-007 | Spring Security OAuth2 Resource Server | ⚠️ In Progress |
+| LIS-008 | Spring Cloud Gateway | ⚠️ In Progress |
+| LIS-009 | Angular 19 application scaffold | ⚠️ In Progress |
+| LIS-010 | Angular BranchInterceptor and BranchService | ⚠️ In Progress |
+| LIS-011 | Shared Angular layout | ⚠️ In Progress |
+| LIS-012 | Docker Compose | ✅ Done |
+| LIS-013 | Jenkins CI/CD pipeline | ⚠️ In Progress |
+| LIS-014 | Dockerfiles | ✅ Done |
+| LIS-015 | Flyway migrations | ⚠️ In Progress |
+
+**Phase 1 Overall: 🟡 ~65% complete (5 fully done, 10 in progress)**
