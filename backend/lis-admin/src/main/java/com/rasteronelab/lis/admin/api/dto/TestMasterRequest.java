@@ -31,16 +31,16 @@ public class TestMasterRequest {
     @NotNull(message = "Department ID is required")
     private UUID departmentId;
 
-    @Size(max = 100, message = "Short name must not exceed 100 characters")
+    @Size(max = 50, message = "Short name must not exceed 50 characters")
     private String shortName;
 
     @Size(max = 500, message = "Description must not exceed 500 characters")
     private String description;
 
-    @Size(max = 100, message = "Sample type must not exceed 100 characters")
+    @Size(max = 50, message = "Sample type must not exceed 50 characters")
     private String sampleType;
 
-    @Size(max = 100, message = "Tube type must not exceed 100 characters")
+    @Size(max = 50, message = "Tube type must not exceed 50 characters")
     private String tubeType;
 
     @Size(max = 100, message = "Report section must not exceed 100 characters")
