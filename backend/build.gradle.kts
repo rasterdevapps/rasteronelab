@@ -20,8 +20,6 @@ java {
 subprojects {
     apply(plugin = "java")
     apply(plugin = "io.spring.dependency-management")
-    apply(plugin = "checkstyle")
-    apply(plugin = "jacoco")
 
     group = "com.rasteronelab.lis"
     version = "1.0.0-SNAPSHOT"
