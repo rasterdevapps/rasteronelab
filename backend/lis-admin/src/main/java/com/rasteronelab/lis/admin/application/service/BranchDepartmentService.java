@@ -43,7 +43,7 @@ public class BranchDepartmentService {
         if (branchDepartmentRepository.existsByBranchIdAndDepartmentIdAndIsDeletedFalse(
                 request.getBranchId(), request.getDepartmentId())) {
             throw new DuplicateResourceException(
-                    "Department is already assigned to this branch");
+                    "BranchDepartment", "departmentId", request.getDepartmentId().toString());
         }
 
         BranchDepartment mapping = new BranchDepartment();
