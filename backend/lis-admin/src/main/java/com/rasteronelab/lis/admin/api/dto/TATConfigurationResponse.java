@@ -1,0 +1,35 @@
+package com.rasteronelab.lis.admin.api.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * Response DTO for TATConfiguration entity.
+ * Includes testName and departmentName for display.
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class TATConfigurationResponse {
+
+    private UUID id;
+    private UUID branchId;
+    private UUID testId;
+    private String testName;
+    private UUID departmentId;
+    private String departmentName;
+    private Integer routineHours;
+    private Integer statHours;
+    private Integer criticalHours;
+    private Boolean isActive;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String createdBy;
+    private String updatedBy;
+}
