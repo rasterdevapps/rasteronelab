@@ -195,4 +195,82 @@ export const ADMIN_ROUTES: Routes = [
     path: 'insurance-tariffs/:id/edit',
     loadComponent: () => import('./components/insurance-tariff-form/insurance-tariff-form.component').then(m => m.InsuranceTariffFormComponent),
   },
+  // LIS-032: Antibiotic Master
+  {
+    path: 'antibiotics',
+    loadComponent: () => import('./components/antibiotic-list/antibiotic-list.component').then(m => m.AntibioticListComponent),
+  },
+  {
+    path: 'antibiotics/new',
+    loadComponent: () => import('./components/antibiotic-form/antibiotic-form.component').then(m => m.AntibioticFormComponent),
+  },
+  {
+    path: 'antibiotics/:id/edit',
+    loadComponent: () => import('./components/antibiotic-form/antibiotic-form.component').then(m => m.AntibioticFormComponent),
+  },
+  // LIS-032: Microorganism Master
+  {
+    path: 'microorganisms',
+    loadComponent: () => import('./components/microorganism-list/microorganism-list.component').then(m => m.MicroorganismListComponent),
+  },
+  {
+    path: 'microorganisms/new',
+    loadComponent: () => import('./components/microorganism-form/microorganism-form.component').then(m => m.MicroorganismFormComponent),
+  },
+  {
+    path: 'microorganisms/:id/edit',
+    loadComponent: () => import('./components/microorganism-form/microorganism-form.component').then(m => m.MicroorganismFormComponent),
+  },
+  // LIS-032: Critical Value Configuration
+  {
+    path: 'critical-values',
+    loadComponent: () => import('./components/critical-value-list/critical-value-list.component').then(m => m.CriticalValueListComponent),
+  },
+  {
+    path: 'critical-values/new',
+    loadComponent: () => import('./components/critical-value-form/critical-value-form.component').then(m => m.CriticalValueFormComponent),
+  },
+  {
+    path: 'critical-values/:id/edit',
+    loadComponent: () => import('./components/critical-value-form/critical-value-form.component').then(m => m.CriticalValueFormComponent),
+  },
+  // LIS-032: Delta Check Configuration
+  {
+    path: 'delta-checks',
+    loadComponent: () => import('./components/delta-check-list/delta-check-list.component').then(m => m.DeltaCheckListComponent),
+  },
+  {
+    path: 'delta-checks/new',
+    loadComponent: () => import('./components/delta-check-form/delta-check-form.component').then(m => m.DeltaCheckFormComponent),
+  },
+  {
+    path: 'delta-checks/:id/edit',
+    loadComponent: () => import('./components/delta-check-form/delta-check-form.component').then(m => m.DeltaCheckFormComponent),
+  },
+  // LIS-032: Auto-Validation Rules
+  {
+    path: 'auto-validation',
+    loadComponent: () => import('./components/auto-validation-list/auto-validation-list.component').then(m => m.AutoValidationListComponent),
+  },
+  {
+    path: 'auto-validation/new',
+    loadComponent: () => import('./components/auto-validation-form/auto-validation-form.component').then(m => m.AutoValidationFormComponent),
+  },
+  {
+    path: 'auto-validation/:id/edit',
+    loadComponent: () => import('./components/auto-validation-form/auto-validation-form.component').then(m => m.AutoValidationFormComponent),
+  },
+  // LIS-032: TAT Configuration
+  {
+    path: 'tat-config',
+    loadComponent: () => import('./components/tat-config-list/tat-config-list.component').then(m => m.TatConfigListComponent),
+  },
+  {
+    path: 'tat-config/new',
+    loadComponent: () => import('./components/tat-config-form/tat-config-form.component').then(m => m.TatConfigFormComponent),
+  },
+  {
+    path: 'tat-config/:id/edit',
+    loadComponent: () => import('./components/tat-config-form/tat-config-form.component').then(m => m.TatConfigFormComponent),
+  },
 ];
