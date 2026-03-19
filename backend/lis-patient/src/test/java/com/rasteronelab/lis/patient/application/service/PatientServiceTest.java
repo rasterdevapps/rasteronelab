@@ -253,4 +253,102 @@ class PatientServiceTest {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    @DisplayName("calculateDuplicateScore should give 100 for full match")
+    void calculateDuplicateScore_fullMatch_shouldGive100() {
+        Patient candidate = new Patient();
+        candidate.setFirstName("John");
+        candidate.setLastName("Doe");
+        candidate.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        candidate.setPhone("1234567890");
+        candidate.setEmail("john@example.com");
+        candidate.setGender(Gender.MALE);
+
+        int score = patientService.calculateDuplicateScore(candidate,
+                "John", "Doe", "1234567890", "john@example.com", "MALE",
+                LocalDate.of(1990, 1, 1));
+
+        assertThat(score).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("calculateDuplicateScore should give 40 for name+DOB match only")
+    void calculateDuplicateScore_nameDobMatch_shouldGive40() {
+        Patient candidate = new Patient();
+        candidate.setFirstName("John");
+        candidate.setLastName("Doe");
+        candidate.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        candidate.setPhone("9999999999");
+        candidate.setGender(Gender.FEMALE);
+
+        int score = patientService.calculateDuplicateScore(candidate,
+                "John", "Doe", "1234567890", null, "MALE",
+                LocalDate.of(1990, 1, 1));
+
+        assertThat(score).isEqualTo(40);
+    }
+
+    @Test
+    @DisplayName("calculateDuplicateScore should give 30 for phone match only")
+    void calculateDuplicateScore_phoneMatch_shouldGive30() {
+        Patient candidate = new Patient();
+        candidate.setFirstName("Jane");
+        candidate.setLastName("Smith");
+        candidate.setDateOfBirth(LocalDate.of(2000, 6, 15));
+        candidate.setPhone("1234567890");
+
+        int score = patientService.calculateDuplicateScore(candidate,
+                "John", "Doe", "1234567890", null, null,
+                LocalDate.of(1990, 1, 1));
+
+        assertThat(score).isEqualTo(30);
+    }
+
+    @Test
+    @DisplayName("calculateDuplicateScore should give 20 for name match without DOB")
+    void calculateDuplicateScore_nameMatchOnly_shouldGive20() {
+        Patient candidate = new Patient();
+        candidate.setFirstName("John");
+        candidate.setLastName("Doe");
+        candidate.setDateOfBirth(LocalDate.of(2000, 6, 15));
+
+        int score = patientService.calculateDuplicateScore(candidate,
+                "John", "Doe", null, null, null,
+                LocalDate.of(1990, 1, 1));
+
+        assertThat(score).isEqualTo(20);
+    }
+
+    @Test
+    @DisplayName("findDuplicatesWithScore should filter candidates below threshold")
+    void findDuplicatesWithScore_shouldFilterBelowThreshold() {
+        Patient highScorePatient = new Patient();
+        highScorePatient.setFirstName("John");
+        highScorePatient.setLastName("Doe");
+        highScorePatient.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        highScorePatient.setPhone("1234567890");
+
+        Patient lowScorePatient = new Patient();
+        lowScorePatient.setFirstName("Jane");
+        lowScorePatient.setLastName("Smith");
+        lowScorePatient.setDateOfBirth(LocalDate.of(2000, 6, 15));
+        lowScorePatient.setPhone("9999999999");
+
+        PatientResponse highResponse = new PatientResponse();
+        PatientResponse lowResponse = new PatientResponse();
+
+        when(patientRepository.findDuplicates(eq(BRANCH_ID), any(), any(), any(), any()))
+                .thenReturn(List.of(highScorePatient, lowScorePatient));
+        when(patientMapper.toResponse(highScorePatient)).thenReturn(highResponse);
+
+        List<java.util.Map<String, Object>> results = patientService.findDuplicatesWithScore(
+                "John", "Doe", "1234567890", null, null, LocalDate.of(1990, 1, 1));
+
+        // High score patient (name+DOB=40 + phone=30 = 70) should be included
+        // Low score patient (no matches significant enough) should be filtered out
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).get("patient")).isEqualTo(highResponse);
+        assertThat((int) results.get(0).get("score")).isGreaterThanOrEqualTo(40);
+    }
 }

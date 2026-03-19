@@ -123,6 +123,22 @@ public class PatientController {
         return ResponseEntity.ok(ApiResponse.success(duplicates));
     }
 
+    @GetMapping("/duplicates/scored")
+    @Operation(summary = "Find duplicate patients with confidence score",
+            description = "Detects potential duplicate patients using weighted scoring algorithm. " +
+                    "Scores: name+DOB=40pts, phone=30pts, email=15pts, gender=15pts. Max=100pts.")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> findDuplicatesWithScore(
+            @Parameter(description = "First name") @RequestParam String firstName,
+            @Parameter(description = "Last name") @RequestParam String lastName,
+            @Parameter(description = "Phone number") @RequestParam(required = false) String phone,
+            @Parameter(description = "Email address") @RequestParam(required = false) String email,
+            @Parameter(description = "Gender") @RequestParam(required = false) String gender,
+            @Parameter(description = "Date of birth (ISO format)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob) {
+        List<Map<String, Object>> results = patientService.findDuplicatesWithScore(
+                firstName, lastName, phone, email, gender, dob);
+        return ResponseEntity.ok(ApiResponse.success(results));
+    }
+
     @PostMapping("/merge")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ORG_ADMIN', 'ADMIN')")
     @Operation(summary = "Merge duplicate patients", description = "Merges a duplicate patient into the primary record")

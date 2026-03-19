@@ -5,6 +5,7 @@ import com.rasteronelab.lis.core.common.exception.NotFoundException;
 import com.rasteronelab.lis.core.event.OrderCancelledEvent;
 import com.rasteronelab.lis.core.event.OrderPlacedEvent;
 import com.rasteronelab.lis.core.infrastructure.BranchContextHolder;
+import com.rasteronelab.lis.core.util.BarcodeGeneratorUtil;
 import com.rasteronelab.lis.order.api.dto.OrderLineItemRequest;
 import com.rasteronelab.lis.order.api.dto.TestOrderRequest;
 import com.rasteronelab.lis.order.api.dto.TestOrderResponse;
@@ -63,6 +64,10 @@ public class TestOrderService {
         order.setStatus(OrderStatus.DRAFT);
         order.setOrderDate(LocalDateTime.now());
         order.setOrderNumber(generateOrderNumber(branchId));
+        order.setBarcode(BarcodeGeneratorUtil.generateOrderNumber(
+                testOrderRepository.countByBranchIdAndIsDeletedFalseAndOrderDateBetween(
+                        branchId, LocalDateTime.now().toLocalDate().atStartOfDay(),
+                        LocalDateTime.now().toLocalDate().atStartOfDay().plusDays(1)) + 1));
 
         if (request.getPriority() != null && !request.getPriority().isBlank()) {
             order.setPriority(Priority.valueOf(request.getPriority()));

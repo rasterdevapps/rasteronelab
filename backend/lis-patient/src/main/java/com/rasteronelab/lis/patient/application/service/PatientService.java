@@ -14,7 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -99,6 +103,79 @@ public class PatientService {
                 .stream()
                 .map(patientMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Finds duplicate patients using a weighted scoring algorithm.
+     * Scoring: name+DOB match = 40pts, phone match = 30pts, email match = 15pts, gender match = 15pts.
+     * Patients scoring above the threshold (40 pts) are returned sorted by descending score.
+     *
+     * @return list of maps containing "patient" (PatientResponse) and "score" (int)
+     */
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> findDuplicatesWithScore(String firstName, String lastName,
+                                                              String phone, String email,
+                                                              String gender, LocalDate dob) {
+        UUID branchId = BranchContextHolder.getCurrentBranchId();
+        List<Patient> candidates = patientRepository.findDuplicates(branchId, firstName, lastName, phone, dob);
+
+        List<Map<String, Object>> scored = new ArrayList<>();
+        for (Patient candidate : candidates) {
+            int score = calculateDuplicateScore(candidate, firstName, lastName, phone, email, gender, dob);
+            if (score >= DUPLICATE_SCORE_THRESHOLD) {
+                Map<String, Object> entry = new LinkedHashMap<>();
+                entry.put("patient", patientMapper.toResponse(candidate));
+                entry.put("score", score);
+                scored.add(entry);
+            }
+        }
+
+        scored.sort(Comparator.<Map<String, Object>, Integer>comparing(m -> (Integer) m.get("score")).reversed());
+        return scored;
+    }
+
+    static final int DUPLICATE_SCORE_THRESHOLD = 40;
+
+    int calculateDuplicateScore(Patient candidate, String firstName, String lastName,
+                                String phone, String email, String gender, LocalDate dob) {
+        int score = 0;
+
+        // Name + DOB match: 40 points
+        boolean nameMatch = equalsIgnoreCaseNullSafe(candidate.getFirstName(), firstName)
+                && equalsIgnoreCaseNullSafe(candidate.getLastName(), lastName);
+        boolean dobMatch = candidate.getDateOfBirth() != null && candidate.getDateOfBirth().equals(dob);
+        if (nameMatch && dobMatch) {
+            score += 40;
+        } else if (nameMatch) {
+            score += 20;
+        } else if (dobMatch) {
+            score += 10;
+        }
+
+        // Phone match: 30 points
+        if (phone != null && phone.equals(candidate.getPhone())) {
+            score += 30;
+        }
+
+        // Email match: 15 points
+        if (email != null && equalsIgnoreCaseNullSafe(candidate.getEmail(), email)) {
+            score += 15;
+        }
+
+        // Gender match: 15 points
+        if (gender != null && candidate.getGender() != null
+                && gender.equalsIgnoreCase(candidate.getGender().name())) {
+            score += 15;
+        }
+
+        return score;
+    }
+
+    private boolean equalsIgnoreCaseNullSafe(String a, String b) {
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.equalsIgnoreCase(b);
     }
 
     private String generateUhid(UUID branchId) {
