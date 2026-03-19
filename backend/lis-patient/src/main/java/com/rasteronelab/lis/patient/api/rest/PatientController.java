@@ -5,6 +5,10 @@ import com.rasteronelab.lis.core.api.PagedResponse;
 import com.rasteronelab.lis.patient.api.dto.PatientRequest;
 import com.rasteronelab.lis.patient.api.dto.PatientResponse;
 import com.rasteronelab.lis.patient.application.service.PatientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,11 +37,18 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/patients")
 @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ORG_ADMIN', 'ADMIN', 'RECEPTIONIST', 'LAB_TECHNICIAN')")
+@Tag(name = "Patient", description = "Patient registration and demographics management")
 public class PatientController {
 
     private final PatientService patientService;
 
     @PostMapping
+    @Operation(summary = "Register a new patient", description = "Creates a new patient with auto-generated UHID")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Patient created successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Duplicate patient detected")
+    })
     public ResponseEntity<ApiResponse<PatientResponse>> create(
             @Valid @RequestBody PatientRequest request) {
         PatientResponse response = patientService.create(request);
@@ -46,44 +57,65 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PatientResponse>> getById(@PathVariable UUID id) {
+    @Operation(summary = "Get patient by ID", description = "Retrieves patient details by UUID")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Patient found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Patient not found")
+    })
+    public ResponseEntity<ApiResponse<PatientResponse>> getById(
+            @Parameter(description = "Patient UUID") @PathVariable UUID id) {
         PatientResponse response = patientService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping
+    @Operation(summary = "List all patients", description = "Returns paginated list of patients in the current branch")
     public ResponseEntity<ApiResponse<PagedResponse<PatientResponse>>> getAll(Pageable pageable) {
         Page<PatientResponse> page = patientService.getAll(pageable);
         return ResponseEntity.ok(ApiResponse.success(PagedResponse.of(page)));
     }
 
     @GetMapping("/search")
+    @Operation(summary = "Search patients", description = "Searches patients by UHID, name, or phone number")
     public ResponseEntity<ApiResponse<PagedResponse<PatientResponse>>> search(
-            @RequestParam("q") String searchTerm, Pageable pageable) {
+            @Parameter(description = "Search term (UHID, name, or phone)") @RequestParam("q") String searchTerm,
+            Pageable pageable) {
         Page<PatientResponse> page = patientService.search(searchTerm, pageable);
         return ResponseEntity.ok(ApiResponse.success(PagedResponse.of(page)));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update patient", description = "Updates an existing patient's details")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Patient updated successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Patient not found")
+    })
     public ResponseEntity<ApiResponse<PatientResponse>> update(
-            @PathVariable UUID id,
+            @Parameter(description = "Patient UUID") @PathVariable UUID id,
             @Valid @RequestBody PatientRequest request) {
         PatientResponse response = patientService.update(id, request);
         return ResponseEntity.ok(ApiResponse.success("Patient updated successfully", response));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+    @Operation(summary = "Delete patient", description = "Soft-deletes a patient record")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Patient deleted successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Patient not found")
+    })
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @Parameter(description = "Patient UUID") @PathVariable UUID id) {
         patientService.delete(id);
         return ResponseEntity.ok(ApiResponse.successMessage("Patient deleted successfully"));
     }
 
     @GetMapping("/duplicates")
+    @Operation(summary = "Find duplicate patients", description = "Detects potential duplicate patients by name, phone, and date of birth")
     public ResponseEntity<ApiResponse<List<PatientResponse>>> findDuplicates(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String phone,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob) {
+            @Parameter(description = "First name") @RequestParam String firstName,
+            @Parameter(description = "Last name") @RequestParam String lastName,
+            @Parameter(description = "Phone number") @RequestParam String phone,
+            @Parameter(description = "Date of birth (ISO format)") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob) {
         List<PatientResponse> duplicates = patientService.findDuplicates(firstName, lastName, phone, dob);
         return ResponseEntity.ok(ApiResponse.success(duplicates));
     }

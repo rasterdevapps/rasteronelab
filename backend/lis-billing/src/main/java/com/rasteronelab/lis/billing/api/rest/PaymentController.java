@@ -5,6 +5,9 @@ import com.rasteronelab.lis.billing.api.dto.PaymentResponse;
 import com.rasteronelab.lis.billing.application.service.PaymentService;
 import com.rasteronelab.lis.core.api.ApiResponse;
 import com.rasteronelab.lis.core.api.PagedResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +27,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/payments")
 @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ORG_ADMIN', 'ADMIN', 'BILLING_STAFF')")
+@Tag(name = "Payment", description = "Payment recording and tracking")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -33,6 +37,7 @@ public class PaymentController {
     }
 
     @PostMapping
+    @Operation(summary = "Record a payment", description = "Records a payment against an invoice, supports split/partial payments")
     public ResponseEntity<ApiResponse<PaymentResponse>> record(@Valid @RequestBody PaymentRequest request) {
         PaymentResponse response = paymentService.recordPayment(request);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -40,18 +45,23 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PaymentResponse>> getById(@PathVariable UUID id) {
+    @Operation(summary = "Get payment by ID", description = "Retrieves payment details by UUID")
+    public ResponseEntity<ApiResponse<PaymentResponse>> getById(
+            @Parameter(description = "Payment UUID") @PathVariable UUID id) {
         return ResponseEntity.ok(ApiResponse.success(paymentService.getById(id)));
     }
 
     @GetMapping
+    @Operation(summary = "List all payments", description = "Returns paginated list of payments in the current branch")
     public ResponseEntity<ApiResponse<PagedResponse<PaymentResponse>>> getAll(Pageable pageable) {
         Page<PaymentResponse> page = paymentService.getAll(pageable);
         return ResponseEntity.ok(ApiResponse.success(PagedResponse.of(page)));
     }
 
     @GetMapping("/invoice/{invoiceId}")
-    public ResponseEntity<ApiResponse<List<PaymentResponse>>> getByInvoice(@PathVariable UUID invoiceId) {
+    @Operation(summary = "Get payments by invoice", description = "Returns all payments for a specific invoice")
+    public ResponseEntity<ApiResponse<List<PaymentResponse>>> getByInvoice(
+            @Parameter(description = "Invoice UUID") @PathVariable UUID invoiceId) {
         return ResponseEntity.ok(ApiResponse.success(paymentService.getByInvoice(invoiceId)));
     }
 }

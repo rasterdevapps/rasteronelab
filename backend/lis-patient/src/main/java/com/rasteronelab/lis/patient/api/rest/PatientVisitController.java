@@ -5,6 +5,9 @@ import com.rasteronelab.lis.core.api.PagedResponse;
 import com.rasteronelab.lis.patient.api.dto.PatientVisitRequest;
 import com.rasteronelab.lis.patient.api.dto.PatientVisitResponse;
 import com.rasteronelab.lis.patient.application.service.PatientVisitService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,11 +33,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/patients/{patientId}/visits")
 @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ORG_ADMIN', 'ADMIN', 'RECEPTIONIST', 'LAB_TECHNICIAN')")
+@Tag(name = "Patient Visit", description = "Patient visit tracking and management")
 public class PatientVisitController {
 
     private final PatientVisitService patientVisitService;
 
     @PostMapping
+    @Operation(summary = "Create a patient visit", description = "Records a new visit for the specified patient")
     public ResponseEntity<ApiResponse<PatientVisitResponse>> create(
             @PathVariable UUID patientId,
             @Valid @RequestBody PatientVisitRequest request) {
@@ -44,6 +49,7 @@ public class PatientVisitController {
     }
 
     @GetMapping("/{visitId}")
+    @Operation(summary = "Get visit by ID", description = "Retrieves a specific patient visit")
     public ResponseEntity<ApiResponse<PatientVisitResponse>> getById(
             @PathVariable UUID patientId,
             @PathVariable UUID visitId) {
@@ -52,6 +58,7 @@ public class PatientVisitController {
     }
 
     @GetMapping
+    @Operation(summary = "List patient visits", description = "Returns paginated visit history for a patient")
     public ResponseEntity<ApiResponse<PagedResponse<PatientVisitResponse>>> getByPatientId(
             @PathVariable UUID patientId, Pageable pageable) {
         Page<PatientVisitResponse> page = patientVisitService.getByPatientId(patientId, pageable);
@@ -59,6 +66,7 @@ public class PatientVisitController {
     }
 
     @PutMapping("/{visitId}")
+    @Operation(summary = "Update a patient visit", description = "Updates an existing patient visit")
     public ResponseEntity<ApiResponse<PatientVisitResponse>> update(
             @PathVariable UUID patientId,
             @PathVariable UUID visitId,
@@ -68,6 +76,7 @@ public class PatientVisitController {
     }
 
     @DeleteMapping("/{visitId}")
+    @Operation(summary = "Delete a patient visit", description = "Soft-deletes a patient visit record")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable UUID patientId,
             @PathVariable UUID visitId) {
