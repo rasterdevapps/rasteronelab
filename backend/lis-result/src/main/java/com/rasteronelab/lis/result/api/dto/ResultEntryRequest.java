@@ -55,6 +55,12 @@ public class ResultEntryRequest {
 
         private String unit;
 
+        private String referenceRangeLow;
+
+        private String referenceRangeHigh;
+
+        private String referenceRangeText;
+
         public UUID getParameterId() {
             return parameterId;
         }
@@ -109,6 +115,30 @@ public class ResultEntryRequest {
 
         public void setUnit(String unit) {
             this.unit = unit;
+        }
+
+        public String getReferenceRangeLow() {
+            return referenceRangeLow;
+        }
+
+        public void setReferenceRangeLow(String referenceRangeLow) {
+            this.referenceRangeLow = referenceRangeLow;
+        }
+
+        public String getReferenceRangeHigh() {
+            return referenceRangeHigh;
+        }
+
+        public void setReferenceRangeHigh(String referenceRangeHigh) {
+            this.referenceRangeHigh = referenceRangeHigh;
+        }
+
+        public String getReferenceRangeText() {
+            return referenceRangeText;
+        }
+
+        public void setReferenceRangeText(String referenceRangeText) {
+            this.referenceRangeText = referenceRangeText;
         }
     }
 }

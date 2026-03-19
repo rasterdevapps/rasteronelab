@@ -9,7 +9,6 @@ import com.rasteronelab.lis.result.api.dto.TestResultResponse;
 import com.rasteronelab.lis.result.api.mapper.TestResultMapper;
 import com.rasteronelab.lis.result.domain.model.ResultHistory;
 import com.rasteronelab.lis.result.domain.model.ResultStatus;
-import com.rasteronelab.lis.result.domain.model.ResultType;
 import com.rasteronelab.lis.result.domain.model.ResultValue;
 import com.rasteronelab.lis.result.domain.model.TestResult;
 import com.rasteronelab.lis.result.domain.repository.ResultHistoryRepository;
@@ -19,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,22 +106,7 @@ public class ResultAuthorizationService {
             }
 
             for (ResultEntryRequest.ResultValueEntry entry : request.getValues()) {
-                ResultValue resultValue = new ResultValue();
-                resultValue.setBranchId(branchId);
-                resultValue.setTestResult(testResult);
-                resultValue.setParameterId(entry.getParameterId());
-                resultValue.setParameterCode(entry.getParameterCode());
-                resultValue.setParameterName(entry.getParameterName());
-                resultValue.setUnit(entry.getUnit());
-
-                ResultType resultType = parseResultType(entry.getResultType());
-                resultValue.setResultType(resultType);
-
-                if (entry.getNumericValue() != null && !entry.getNumericValue().isBlank()) {
-                    resultValue.setNumericValue(new BigDecimal(entry.getNumericValue()));
-                }
-                resultValue.setTextValue(entry.getTextValue());
-
+                ResultValue resultValue = ResultEntryService.buildResultValue(entry, branchId, testResult);
                 resultValueRepository.save(resultValue);
             }
         }
@@ -132,17 +115,6 @@ public class ResultAuthorizationService {
         recordHistory(saved, previousStatus, ResultStatus.AMENDED, "AMENDED",
                 "Result amended by " + currentUser + ". Reason: " + request.getAmendmentReason());
         return testResultMapper.toResponse(saved);
-    }
-
-    private ResultType parseResultType(String resultType) {
-        if (resultType == null || resultType.isBlank()) {
-            return ResultType.NUMERIC;
-        }
-        try {
-            return ResultType.valueOf(resultType.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResultType.NUMERIC;
-        }
     }
 
     private void recordHistory(TestResult testResult, ResultStatus previousStatus,

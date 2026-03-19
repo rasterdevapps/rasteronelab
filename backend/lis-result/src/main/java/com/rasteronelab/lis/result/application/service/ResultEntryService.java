@@ -87,23 +87,9 @@ public class ResultEntryService {
             boolean hasCriticalValue = false;
 
             for (ResultEntryRequest.ResultValueEntry entry : request.getValues()) {
-                ResultValue resultValue = new ResultValue();
-                resultValue.setBranchId(branchId);
-                resultValue.setTestResult(testResult);
-                resultValue.setParameterId(entry.getParameterId());
-                resultValue.setParameterCode(entry.getParameterCode());
-                resultValue.setParameterName(entry.getParameterName());
-                resultValue.setUnit(entry.getUnit());
+                ResultValue resultValue = buildResultValue(entry, branchId, testResult);
 
-                ResultType resultType = parseResultType(entry.getResultType());
-                resultValue.setResultType(resultType);
-
-                if (entry.getNumericValue() != null && !entry.getNumericValue().isBlank()) {
-                    resultValue.setNumericValue(new BigDecimal(entry.getNumericValue()));
-                }
-                resultValue.setTextValue(entry.getTextValue());
-
-                // Calculate abnormal flag for numeric values
+                // Calculate abnormal flag for numeric values with reference ranges
                 if (resultValue.getNumericValue() != null
                         && resultValue.getReferenceRangeLow() != null
                         && resultValue.getReferenceRangeHigh() != null) {
@@ -227,6 +213,48 @@ public class ResultEntryService {
         } catch (IllegalArgumentException e) {
             return ResultType.NUMERIC;
         }
+    }
+
+    /**
+     * Builds a ResultValue entity from a request entry, populating all fields
+     * including reference ranges from the request.
+     */
+    static ResultValue buildResultValue(ResultEntryRequest.ResultValueEntry entry,
+                                        UUID branchId, TestResult testResult) {
+        ResultValue resultValue = new ResultValue();
+        resultValue.setBranchId(branchId);
+        resultValue.setTestResult(testResult);
+        resultValue.setParameterId(entry.getParameterId());
+        resultValue.setParameterCode(entry.getParameterCode());
+        resultValue.setParameterName(entry.getParameterName());
+        resultValue.setUnit(entry.getUnit());
+
+        ResultType resultType;
+        if (entry.getResultType() == null || entry.getResultType().isBlank()) {
+            resultType = ResultType.NUMERIC;
+        } else {
+            try {
+                resultType = ResultType.valueOf(entry.getResultType().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                resultType = ResultType.NUMERIC;
+            }
+        }
+        resultValue.setResultType(resultType);
+
+        if (entry.getNumericValue() != null && !entry.getNumericValue().isBlank()) {
+            resultValue.setNumericValue(new BigDecimal(entry.getNumericValue()));
+        }
+        resultValue.setTextValue(entry.getTextValue());
+
+        if (entry.getReferenceRangeLow() != null && !entry.getReferenceRangeLow().isBlank()) {
+            resultValue.setReferenceRangeLow(new BigDecimal(entry.getReferenceRangeLow()));
+        }
+        if (entry.getReferenceRangeHigh() != null && !entry.getReferenceRangeHigh().isBlank()) {
+            resultValue.setReferenceRangeHigh(new BigDecimal(entry.getReferenceRangeHigh()));
+        }
+        resultValue.setReferenceRangeText(entry.getReferenceRangeText());
+
+        return resultValue;
     }
 
     private void recordHistory(TestResult testResult, ResultStatus previousStatus,
