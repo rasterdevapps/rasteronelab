@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -49,6 +50,9 @@ class TestOrderServiceTest {
 
     @Mock
     private OrderLineItemMapper orderLineItemMapper;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private TestOrderService testOrderService;
@@ -252,5 +256,97 @@ class TestOrderServiceTest {
         assertThat(order.getIsDeleted()).isTrue();
         assertThat(order.getDeletedAt()).isNotNull();
         verify(testOrderRepository).save(order);
+    }
+
+    @Test
+    @DisplayName("updateStatus should transition SAMPLE_COLLECTED to IN_PROGRESS")
+    void updateStatus_shouldTransitionSampleCollectedToInProgress() {
+        UUID id = UUID.randomUUID();
+        TestOrder order = new TestOrder();
+        order.setStatus(OrderStatus.SAMPLE_COLLECTED);
+        TestOrder saved = new TestOrder();
+        TestOrderResponse response = new TestOrderResponse();
+
+        when(testOrderRepository.findByIdAndBranchIdAndIsDeletedFalse(id, BRANCH_ID)).thenReturn(Optional.of(order));
+        when(testOrderRepository.save(order)).thenReturn(saved);
+        when(testOrderMapper.toResponse(saved)).thenReturn(response);
+
+        TestOrderResponse result = testOrderService.updateStatus(id, OrderStatus.IN_PROGRESS);
+
+        assertThat(result).isEqualTo(response);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.IN_PROGRESS);
+    }
+
+    @Test
+    @DisplayName("updateStatus should set completedAt when transitioning to COMPLETED")
+    void updateStatus_toCompleted_shouldSetCompletedAt() {
+        UUID id = UUID.randomUUID();
+        TestOrder order = new TestOrder();
+        order.setStatus(OrderStatus.AUTHORISED);
+        TestOrder saved = new TestOrder();
+        TestOrderResponse response = new TestOrderResponse();
+
+        when(testOrderRepository.findByIdAndBranchIdAndIsDeletedFalse(id, BRANCH_ID)).thenReturn(Optional.of(order));
+        when(testOrderRepository.save(order)).thenReturn(saved);
+        when(testOrderMapper.toResponse(saved)).thenReturn(response);
+
+        testOrderService.updateStatus(id, OrderStatus.COMPLETED);
+
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.COMPLETED);
+        assertThat(order.getCompletedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("updateStatus should throw for invalid transition")
+    void updateStatus_invalidTransition_shouldThrow() {
+        UUID id = UUID.randomUUID();
+        TestOrder order = new TestOrder();
+        order.setStatus(OrderStatus.DRAFT);
+
+        when(testOrderRepository.findByIdAndBranchIdAndIsDeletedFalse(id, BRANCH_ID)).thenReturn(Optional.of(order));
+
+        assertThatThrownBy(() -> testOrderService.updateStatus(id, OrderStatus.COMPLETED))
+                .isInstanceOf(BusinessRuleException.class)
+                .hasMessageContaining("Invalid state transition");
+    }
+
+    @Test
+    @DisplayName("placeOrder should publish OrderPlacedEvent")
+    void placeOrder_shouldPublishOrderPlacedEvent() {
+        UUID id = UUID.randomUUID();
+        TestOrder order = new TestOrder();
+        order.setStatus(OrderStatus.DRAFT);
+        order.setPatientId(UUID.randomUUID());
+        TestOrder saved = new TestOrder();
+        saved.setId(id);
+        saved.setPatientId(order.getPatientId());
+        TestOrderResponse response = new TestOrderResponse();
+
+        when(testOrderRepository.findByIdAndBranchIdAndIsDeletedFalse(id, BRANCH_ID)).thenReturn(Optional.of(order));
+        when(testOrderRepository.save(order)).thenReturn(saved);
+        when(testOrderMapper.toResponse(saved)).thenReturn(response);
+
+        testOrderService.placeOrder(id);
+
+        verify(eventPublisher).publishEvent(any(com.rasteronelab.lis.core.event.OrderPlacedEvent.class));
+    }
+
+    @Test
+    @DisplayName("cancelOrder should publish OrderCancelledEvent")
+    void cancelOrder_shouldPublishOrderCancelledEvent() {
+        UUID id = UUID.randomUUID();
+        TestOrder order = new TestOrder();
+        order.setStatus(OrderStatus.PLACED);
+        TestOrder saved = new TestOrder();
+        saved.setId(id);
+        TestOrderResponse response = new TestOrderResponse();
+
+        when(testOrderRepository.findByIdAndBranchIdAndIsDeletedFalse(id, BRANCH_ID)).thenReturn(Optional.of(order));
+        when(testOrderRepository.save(order)).thenReturn(saved);
+        when(testOrderMapper.toResponse(saved)).thenReturn(response);
+
+        testOrderService.cancelOrder(id, "Test reason");
+
+        verify(eventPublisher).publishEvent(any(com.rasteronelab.lis.core.event.OrderCancelledEvent.class));
     }
 }
