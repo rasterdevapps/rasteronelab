@@ -2,6 +2,7 @@ package com.rasteronelab.lis.patient.api.rest;
 
 import com.rasteronelab.lis.core.api.ApiResponse;
 import com.rasteronelab.lis.core.api.PagedResponse;
+import com.rasteronelab.lis.patient.api.dto.DuplicateCheckRequest;
 import com.rasteronelab.lis.patient.api.dto.PatientRequest;
 import com.rasteronelab.lis.patient.api.dto.PatientResponse;
 import com.rasteronelab.lis.patient.application.service.PatientMergeService;
@@ -121,6 +122,22 @@ public class PatientController {
             @Parameter(description = "Date of birth (ISO format)") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob) {
         List<PatientResponse> duplicates = patientService.findDuplicates(firstName, lastName, phone, dob);
         return ResponseEntity.ok(ApiResponse.success(duplicates));
+    }
+
+    @GetMapping("/duplicates/scored")
+    @Operation(summary = "Find duplicate patients with confidence score",
+            description = "Detects potential duplicate patients using weighted scoring algorithm. " +
+                    "Scores: name+DOB=40pts, phone=30pts, email=15pts, gender=15pts. Max=100pts.")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> findDuplicatesWithScore(
+            @Parameter(description = "First name") @RequestParam String firstName,
+            @Parameter(description = "Last name") @RequestParam String lastName,
+            @Parameter(description = "Phone number") @RequestParam(required = false) String phone,
+            @Parameter(description = "Email address") @RequestParam(required = false) String email,
+            @Parameter(description = "Gender") @RequestParam(required = false) String gender,
+            @Parameter(description = "Date of birth (ISO format)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob) {
+        DuplicateCheckRequest request = new DuplicateCheckRequest(firstName, lastName, phone, email, gender, dob);
+        List<Map<String, Object>> results = patientService.findDuplicatesWithScore(request);
+        return ResponseEntity.ok(ApiResponse.success(results));
     }
 
     @PostMapping("/merge")
