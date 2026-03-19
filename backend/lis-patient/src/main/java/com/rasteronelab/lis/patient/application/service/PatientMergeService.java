@@ -112,9 +112,16 @@ public class PatientMergeService {
     }
 
     private String buildMergeDetails(Patient primary, Patient merged) {
-        return "{\"primary\":{\"uhid\":\"" + primary.getUhid() + "\",\"name\":\"" +
-                primary.getFirstName() + " " + primary.getLastName() + "\"}," +
-                "\"merged\":{\"uhid\":\"" + merged.getUhid() + "\",\"name\":\"" +
-                merged.getFirstName() + " " + merged.getLastName() + "\"}}";
+        return "{\"primary\":{\"uhid\":\"" + escapeJson(primary.getUhid()) + "\",\"name\":\"" +
+                escapeJson(primary.getFirstName()) + " " + escapeJson(primary.getLastName()) + "\"}," +
+                "\"merged\":{\"uhid\":\"" + escapeJson(merged.getUhid()) + "\",\"name\":\"" +
+                escapeJson(merged.getFirstName()) + " " + escapeJson(merged.getLastName()) + "\"}}";
+    }
+
+    private String escapeJson(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }
