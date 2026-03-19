@@ -11,7 +11,7 @@
 | Phase | Issues | Status | Progress | Key Blocker |
 |-------|--------|--------|----------|-------------|
 | Phase 1 — Foundation | 15 | ✅ Complete | **100%** | — |
-| Phase 2 — Administration Module | 18 | 🟡 In Progress | **~85%** | 5 missing backend entities; test coverage 29% |
+| Phase 2 — Administration Module | 18 | 🟡 In Progress | **~90%** | 4 missing backend entities; test coverage 29% |
 | Phase 3 — Patient & Ordering | 21 | 🟡 Scaffolded | **~30%** | Order state machine; UHID generation; panel expansion |
 | Phase 4 — Sample Management | 14 | ⬜ Not Started | **0%** | Blocked by Phase 3 state machine |
 | Phase 5 — Result Entry & Validation | 20 | ⬜ Not Started | **0%** | Blocked by Phase 4 |
@@ -69,7 +69,7 @@
 
 ---
 
-## Phase 2 — Administration Module 🟡 IN PROGRESS (~85%)
+## Phase 2 — Administration Module 🟡 IN PROGRESS (~90%)
 
 **Timeline:** Months 2–4 | **Issues:** 18 (LIS-016 to LIS-033)
 
@@ -95,7 +95,7 @@
 |-------|-------|--------|-----|
 | LIS-016 | Organization CRUD API | ✅ Complete | No unit tests |
 | LIS-017 | Branch Management CRUD API | ✅ Complete | No unit tests |
-| LIS-018 | Department Management CRUD API | ✅ Complete | No seed data; no tests |
+| LIS-018 | Department Management CRUD API | ✅ Complete | No unit tests; seed data ✅ (PR #16 — R__001) |
 | LIS-019 | Test Master CRUD API | ✅ Complete | No unit tests |
 | LIS-020 | Parameter Master CRUD API | ✅ Complete | No unit tests |
 | LIS-021 | Reference Range Config API | ✅ Complete | No unit tests |
@@ -105,32 +105,29 @@
 | LIS-025 | User Management API | ✅ Complete | Tests exist (AppUserServiceTest) |
 | LIS-026 | Number Series Config API | ✅ Complete | Tests exist (NumberSeriesServiceTest) |
 | LIS-027 | TAT Configuration API | ✅ Complete | No unit tests |
-| LIS-028 | Working Hours & Holiday Config API | ✅ Complete | No seed data |
+| LIS-028 | Working Hours & Holiday Config API | ✅ Complete | No unit tests |
 | LIS-029 | Critical Value Config API | ✅ Complete | Tests exist (CriticalValueConfigServiceTest) |
 | LIS-030 | Delta Check & Auto-validation Config API | ✅ Complete | No unit tests |
 | LIS-031 | Antibiotic & Microorganism Masters API | ✅ Complete | Tests exist (AntibioticServiceTest) |
 | LIS-032 | Configuration Screens (Notification/Report Templates) | ⚠️ Partial | Backend for NotificationTemplate, ReportTemplate, DiscountScheme, InsuranceTariff **missing** |
-| LIS-033 | Role & Permission Management API | ❌ Missing | No Role/Permission entity, no CRUD stack; seed data missing |
+| LIS-033 | Role & Permission Management API | ✅ Complete | Full Java stack (entity, repo, service, controller, DTOs, mapper); DB schema ✅ (V20260318_0016); seed data ✅ (PR #16 — R__008) |
 
 ### 🔴 Critical Gaps in Phase 2
 
-1. **5 missing backend entities** — frontend screens exist, APIs are absent:
+1. **4 missing backend entities** — frontend screens exist, APIs are absent:
    - `NotificationTemplate` (TASK-P2-01)
    - `ReportTemplate` (TASK-P2-02)
    - `DiscountScheme` (TASK-P2-03)
    - `InsuranceTariff` (TASK-P2-04)
-   - `Role` / `Permission` with Keycloak sync (TASK-P2-05)
 
-2. **No seed data** — system is unusable without initial masters:
-   - 11 standard lab departments (TASK-P2-06)
-   - ~50 common antibiotics
-   - ~100 common microorganisms
+   > **✅ Resolved (PR #16):** `Role` / `Permission` — DB schema (V20260318_0016) and seed data (R__008) added; full Java CRUD stack already existed.
+   > **✅ Resolved (PR #16):** Seed data — 12 repeatable migrations (R__001–R__012) added: 11 departments, 15 sample types, 60+ antibiotics, 80+ microorganisms, CLSI breakpoints, units, roles/permissions, report templates, rejection reasons, number series, critical values.
 
-3. **Test coverage: 29%** — only 6 of 21 services tested (target: 80%); 15 services need tests (TASK-P2-07)
+2. **Test coverage: 29%** — only 6 of 21 services tested (target: 80%); 15 services need tests (TASK-P2-07)
 
-4. **No frontend unit tests** — 42 components, 0 `.spec.ts` files (TASK-P2-08)
+3. **No frontend unit tests** — 42 components, 0 `.spec.ts` files (TASK-P2-08)
 
-> **Phase 2 verdict: 🟡 ~85% — 5 tasks remain before closure. Estimated effort: 2.5 weeks (single developer, sequential). With 2–3 developers in parallel the calendar time reduces to ~1 week.**
+> **Phase 2 verdict: 🟡 ~90% — 3 tasks remain before closure (4 missing entities, test coverage, frontend tests). Estimated effort: 2 weeks (single developer, sequential). With 2–3 developers in parallel the calendar time reduces to ~1 week.**
 > See [pending-tasks.md](pending-tasks.md) for the full task breakdown with file checklists.
 
 ---
@@ -433,9 +430,9 @@ Phase 3 (Order State Machine) ──→ Phase 4 (Sample Lifecycle)
 Orders cannot transition through the workflow. Phase 4 cannot begin until resolved.
 **Effort:** 3–5 days | **Owner:** Phase 3 team
 
-### 🔴 Blocker 2 — Phase 2 Missing Entities (TASK-P2-01 to P2-05)
-5 frontend screens call APIs that don't exist (runtime errors). Blocks Phase 2 sign-off.
-**Effort:** 5–7 days | **Owner:** Phase 2 team
+### 🔴 Blocker 2 — Phase 2 Missing Entities (TASK-P2-01 to P2-04)
+4 frontend screens call APIs that don't exist (runtime errors). Blocks Phase 2 sign-off.
+**Effort:** 4–5 days | **Owner:** Phase 2 team
 
 ### 🟡 Risk 1 — Test Coverage (Phase 2)
 29% coverage in `lis-admin`; target is 80%. 15 service tests need to be added.
@@ -445,9 +442,8 @@ Orders cannot transition through the workflow. Phase 4 cannot begin until resolv
 42 Angular components have TypeScript logic but no UI templates. Not usable in a browser.
 **Effort:** 15–20 days (parallel)
 
-### 🟡 Risk 3 — No Seed Data
-Without the 11 standard departments, antibiotics, and microorganisms, the system cannot be demonstrated end-to-end.
-**Effort:** 2–3 days
+### ✅ Risk 3 — Seed Data — RESOLVED (PR #16)
+12 repeatable Flyway migrations (R__001–R__012) added: departments, sample types, antibiotics, microorganisms, CLSI breakpoints, units, roles/permissions, report templates, rejection reasons, number series, critical values.
 
 ---
 
@@ -455,7 +451,7 @@ Without the 11 standard departments, antibiotics, and microorganisms, the system
 
 | Phase | Current | Target | Effort | Key Remaining Work |
 |-------|---------|--------|--------|--------------------|
-| Phase 2 | 85% | 100% | 2.5 wks (1 dev) | 5 entities, tests (×15), seed data, frontend HTML |
+| Phase 2 | 90% | 100% | 2 wks (1 dev) | 4 missing entities, tests (×15), frontend HTML |
 | Phase 3 | 30% | 100% | 6 wks | State machine, UHID, panel expansion, UI (34 screens) |
 | Phase 4 | 0% | 100% | 4 wks | Full sample lifecycle, barcode scanning, state machine |
 | Phase 5 | 0% | 100% | 8 wks | 7 depts, 20 issues, auto-calc, delta check, critical values |
@@ -470,10 +466,11 @@ Without the 11 standard departments, antibiotics, and microorganisms, the system
 
 ### Immediate (Next 2 Weeks) — Complete Phase 2
 
-1. **Create 5 missing backend entities** with full CRUD stacks (TASK-P2-01 to P2-05)
-2. **Add 3 seed data migrations** for departments, antibiotics, microorganisms (TASK-P2-06)
-3. **Add 15 service unit tests** to reach 80% coverage in `lis-admin` (TASK-P2-07)
-4. **Add minimum frontend tests** for 4 critical admin components (TASK-P2-08)
+1. **Create 4 missing backend entities** with full CRUD stacks (TASK-P2-01 to P2-04): `NotificationTemplate`, `ReportTemplate`, `DiscountScheme`, `InsuranceTariff`
+   > ✅ `Role`/`Permission` (TASK-P2-05) — DB schema and seed data added in PR #16; Java stack already existed.
+   > ✅ Seed data (TASK-P2-06) — 12 repeatable migrations added in PR #16.
+2. **Add 15 service unit tests** to reach 80% coverage in `lis-admin` (TASK-P2-07)
+3. **Add minimum frontend tests** for 4 critical admin components (TASK-P2-08)
 
 ### Short Term (Weeks 3–10) — Complete Phase 3
 

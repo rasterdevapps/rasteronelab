@@ -1,14 +1,14 @@
 # Phase 2: Administration Module — Status Review
 
-> **Review Date:** 2026-03-18
+> **Review Date:** 2026-03-19 (updated to reflect PR #16 merge)
 > **Phase Timeline:** Months 2–4
-> **Overall Status:** 🟡 ~85% Complete — Backend & Frontend implemented, gaps in testing, seed data, and 5 missing backend entities
+> **Overall Status:** 🟡 ~90% Complete — Backend & Frontend implemented; seed data ✅ added (PR #16); gaps remain in testing and 4 missing backend entities
 
 ---
 
 ## Executive Summary
 
-Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend master data CRUD APIs, frontend admin screens, and database migrations. The majority of the work is implemented — 154 backend Java files, 42 frontend Angular components, and 13 Flyway migrations are in place. However, several completion criteria remain unmet: missing backend entities for 5 frontend screens, no seed data, limited test coverage (~29% of services), and no frontend unit tests.
+Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend master data CRUD APIs, frontend admin screens, and database migrations. The majority of the work is implemented — 154+ backend Java files, 42 frontend Angular components, and 20+ Flyway migrations are in place. Seed data was added in PR #16 (12 repeatable migrations: departments, sample types, antibiotics, microorganisms, CLSI breakpoints, units, roles/permissions, report templates, rejection reasons, number series, critical values). Remaining gaps: 4 missing backend entities for frontend screens, limited test coverage (~29% of services), and no frontend unit tests.
 
 ---
 
@@ -40,7 +40,7 @@ Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend maste
 - [x] Department entity, DTO, mapper
 - [x] DepartmentService with CRUD
 - [x] Branch-Department mapping (BranchDepartment entity + service)
-- [ ] Seed data for 11 departments ❌ _No INSERT statements in migrations_
+- [x] Seed data for 11 departments ✅ _R__001_seed_departments.sql added in PR #16_
 - [ ] Unit tests ⚠️ _No tests found_
 
 ---
@@ -141,7 +141,7 @@ Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend maste
 - [x] Antibiotic entity with CLSI breakpoints + Unit tests ✅ `AntibioticServiceTest.java` (155 LOC)
 - [x] Microorganism entity
 - [x] Antibiotic-organism mapping (AntibioticOrganismMapping entity + service)
-- [ ] Seed data for common antibiotics/organisms ❌ _No INSERT statements_
+- [x] Seed data for common antibiotics/organisms ✅ _R__003_seed_antibiotics.sql + R__004_seed_microorganisms.sql added in PR #16_
 - [x] Unit tests (partial — Antibiotic only)
 
 ---
@@ -200,14 +200,14 @@ Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend maste
 
 | Issue | Title | Status | Details |
 |-------|-------|--------|---------|
-| **LIS-033** | Flyway Migrations for Phase 2 | 🟡 Partial | 13 forward + 13 rollback migrations, but no seed data |
+| **LIS-033** | Flyway Migrations for Phase 2 | ✅ Complete | 13+ forward migrations, rollback scripts; **12 repeatable seed migrations added in PR #16** (R__001–R__012) |
 
 #### LIS-033 Acceptance Criteria
 - [x] All migrations follow naming convention (`V{YYYYMMDD_HHmm}__{description}.sql`)
-- [x] Forward and rollback scripts (13 + 13 = 26 files)
+- [x] Forward and rollback scripts (13+ forward + rollback files)
 - [x] Indexes on frequently queried columns
 - [x] Foreign key relationships
-- [ ] Seed data for essential masters ❌ _No INSERT statements in any migration_
+- [x] Seed data for essential masters ✅ _Added in PR #16: R__001–R__012 (departments, sample types, antibiotics, microorganisms, CLSI breakpoints, units, roles/permissions, report templates, rejection reasons, number series, critical values)_
 
 ---
 
@@ -222,7 +222,7 @@ Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend maste
 | **Repositories** | 23 | Data access layer |
 | **DTOs** | 42 | Request/Response pairs |
 | **Mappers** | 21 | MapStruct entity↔DTO |
-| **Flyway Migrations** | 26 | 13 forward + 13 rollback |
+| **Flyway Migrations** | 38 | 13+ versioned forward + rollback; **12 repeatable seed migrations (R__001–R__012)** |
 | **Backend Tests** | 6 | Service-level unit tests |
 | **Frontend Components** | 42 | 21 list + 21 form pairs |
 | **Frontend Routes** | 63 | Lazy-loaded admin routes |
@@ -237,16 +237,16 @@ Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend maste
 
 | # | Gap | Impact | Affected Issues |
 |---|-----|--------|-----------------|
-| 1 | **5 frontend screens have no backend API** | Frontend calls will fail at runtime | LIS-032 |
-| 2 | **No seed data** for departments, antibiotics, microorganisms | System unusable without initial master data | LIS-018, LIS-028, LIS-033 |
-| 3 | **No Role/Permission entity in backend** | Role management screen cannot function | LIS-025, LIS-031 |
+| 1 | **4 frontend screens have no backend API** | Frontend calls will fail at runtime | LIS-032 |
+| 2 | **No Role/Permission entity in backend** ~~(resolved in PR #16 — schema + seed added)~~ | — | — |
+
+> ✅ **Resolved (PR #16):** Seed data for departments, antibiotics, microorganisms and more — 12 repeatable Flyway migrations (R__001–R__012) merged.
 
 **Missing Backend Entities (frontend exists, backend does not):**
 - `NotificationTemplate` — Frontend screen exists, no backend entity/API/migration
 - `ReportTemplate` — Frontend screen exists, no backend entity/API/migration
 - `DiscountScheme` — Frontend screen exists, no backend entity/API/migration
 - `InsuranceTariff` — Frontend screen exists, no backend entity/API/migration
-- `Role` / `Permission` — Frontend permission matrix exists, no backend entity
 
 ### 🟡 Moderate Gaps
 
@@ -271,10 +271,10 @@ Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend maste
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| All master data CRUD APIs functional (55+ endpoints) | 🟡 ~80% | 21 controllers active; 5 entity types missing backend |
+| All master data CRUD APIs functional (55+ endpoints) | 🟡 ~85% | 22+ controllers active; 4 entity types (NotificationTemplate, ReportTemplate, DiscountScheme, InsuranceTariff) missing backend |
 | All 25 admin Angular screens implemented | ✅ Done | 42 components (exceeds target with list+form per screen) |
-| Master data seeded for development/testing | ❌ Not Done | No INSERT statements in any migration file |
-| Flyway migrations run cleanly | ✅ Done | 13 forward + 13 rollback scripts present |
+| Master data seeded for development/testing | ✅ Done | **PR #16**: 12 repeatable seed migrations (R__001–R__012) covering departments, sample types, antibiotics, microorganisms, CLSI breakpoints, units, roles/permissions, report templates, rejection reasons, number series, critical values |
+| Flyway migrations run cleanly | ✅ Done | 13+ forward + rollback + 12 repeatable seed migrations |
 | 80% test coverage on lis-admin module | ❌ Not Done | ~29% service coverage (6 of 21 services tested) |
 | API documentation (OpenAPI/Swagger) | 🟡 Partial | SpringDoc configured, auto-generates from annotations but no @Operation descriptions |
 | Admin screens pass accessibility checks | ❌ Not Done | No accessibility testing performed |
@@ -284,9 +284,10 @@ Phase 2 comprises **18 issues** (LIS-016 through LIS-033) covering backend maste
 ## Recommended Next Steps (Priority Order)
 
 ### P0 — Required for Phase 2 Completion
-1. **Create missing backend entities**: NotificationTemplate, ReportTemplate, DiscountScheme, InsuranceTariff, Role/Permission — with full CRUD stack (entity, repo, service, controller, DTOs, mapper, migration)
-2. **Add seed data migration**: `V20260317_0014__seed_essential_masters.sql` with INSERT statements for departments (11), common antibiotics, common microorganisms
-3. **Increase test coverage to 80%**: Add service tests for the remaining 15 untested services
+1. **Create 4 missing backend entities**: NotificationTemplate, ReportTemplate, DiscountScheme, InsuranceTariff — with full CRUD stack (entity, repo, service, controller, DTOs, mapper, migration)
+   > ✅ Role/Permission — DB schema (V20260318_0016) and seed data (R__008) added in PR #16; Java CRUD stack already existed.
+   > ✅ Seed data — 12 repeatable migrations (R__001–R__012) merged in PR #16.
+2. **Increase test coverage to 80%**: Add service tests for the remaining 15 untested services
 
 ### P1 — Should Have
 4. Add frontend unit tests (`.spec.ts`) for critical components (at minimum: list + form for branch, test, user)

@@ -1,8 +1,8 @@
 # RasterOneLab LIS — Pending Task List (Phases 1–3)
 
-> **Review Date:** 2026-03-18
+> **Review Date:** 2026-03-19 (updated — PR #16 merged)
 > **Scope:** Phases 1, 2, and 3 only
-> **Overall Phase Status:** Phase 1 ✅ Done · Phase 2 🟡 ~85% · Phase 3 ⬜ Not Started
+> **Overall Phase Status:** Phase 1 ✅ Done · Phase 2 🟡 ~90% · Phase 3 ⬜ Not Started
 
 ---
 
@@ -11,9 +11,9 @@
 | Phase | Total Issues | Done | Pending | Blocked |
 |-------|-------------|------|---------|---------|
 | Phase 1 — Foundation | 15 | 15 | **0** | — |
-| Phase 2 — Administration | 18 | 13 | **5 (partial/missing)** | 3 critical |
+| Phase 2 — Administration | 18 | 15 | **3 (partial/missing)** | 1 critical |
 | Phase 3 — Patient & Ordering | 21 | 0 | **21** | — |
-| **Total** | **54** | **28** | **26** | — |
+| **Total** | **54** | **30** | **24** | — |
 
 ---
 
@@ -121,40 +121,33 @@ All 15 issues (LIS-001 to LIS-015) are fully implemented and verified.
 
 ---
 
-#### TASK-P2-05 · Create missing backend entities: `Role` and `Permission`
+#### ✅ TASK-P2-05 · `Role` and `Permission` — RESOLVED (PR #16)
 
-**Issue:** Frontend has a full 10×5 role-permission matrix UI (`role-list`, `role-form` components). Backend has no `Role` or `Permission` entity. `AppUser` cannot assign roles because the entity does not exist. Keycloak sync for user creation/role assignment is also unverified.
+DB schema (`V20260318_0016__create_role_permission_tables.sql`) and seed data (`R__008_seed_roles_permissions.sql`: 10 system roles, 23 permissions, full role-permission matrix) were added in PR #16. The Java CRUD stack (`Role.java`, `RoleRepository`, `RoleService`, `RoleController`, `RoleMapper`, `RoleRequest`, `RoleResponse`) already existed.
 
-**Work required:**
-- [ ] `Permission` JPA entity (fields: `module`, `action` [CREATE/READ/UPDATE/DELETE/APPROVE], `description`)
-- [ ] `Role` JPA entity (fields: `name`, `displayName`, `isSystemRole`, `permissions` — `@ManyToMany`)
-- [ ] `RolePermission` join entity or `@ManyToMany` mapping table
-- [ ] `PermissionRepository`, `RoleRepository` extending `BranchAwareRepository`
-- [ ] `RoleService` with CRUD + permission assignment
-- [ ] `RoleController` with `@PreAuthorize`
-- [ ] `RoleRequest` / `RoleResponse` / `PermissionResponse` DTOs
-- [ ] `RoleMapper` (MapStruct)
-- [ ] Link `AppUser.roles` → `Role` (`@ManyToMany`)
-- [ ] Flyway forward + rollback migration: `V20260318_0019__role_permission.sql`
-- [ ] Verify Keycloak Admin API sync in `AppUserService` (create user in Keycloak on `AppUser` create; assign Keycloak roles)
-- [ ] Unit tests: `RoleServiceTest`
-
-**Files to create:** ~10 Java files + 2 SQL migrations; modify `AppUser.java` and `AppUserService.java`
+**Remaining:**
+- [ ] Verify Keycloak Admin API sync in `AppUserService`
+- [ ] Unit test: `RoleServiceTest`
 
 ---
 
-#### TASK-P2-06 · Add seed data migration for essential masters
+#### ✅ TASK-P2-06 · Seed data migrations — RESOLVED (PR #16)
 
-**Issue:** LIS-018, LIS-028, LIS-033. System is unusable without initial master data. No INSERT statements exist in any migration.
+**12 repeatable Flyway seed migrations merged in PR #16:**
+- [x] `R__001_seed_departments.sql` — 11 standard lab departments
+- [x] `R__002_seed_sample_types.sql` — 15 sample/tube types
+- [x] `R__003_seed_antibiotics.sql` — 60+ antibiotics across 17 CLSI drug classes
+- [x] `R__004_seed_microorganisms.sql` — 80+ microorganisms
+- [x] `R__005_seed_organism_antibiotic_panels.sql` — 11 default antibiotic panels
+- [x] `R__006_seed_clsi_breakpoints.sql` — 47 CLSI M100 2024 breakpoints
+- [x] `R__007_seed_units.sql` — 46 measurement units
+- [x] `R__008_seed_roles_permissions.sql` — 10 roles, 23 permissions, full matrix
+- [x] `R__009_seed_report_templates.sql` — default templates for all 11 departments
+- [x] `R__010_seed_rejection_reasons.sql` — 15 rejection reasons with severity flags
+- [x] `R__011_seed_number_series.sql` — 7 number series patterns (UHID, ORDER, SAMPLE, etc.)
+- [x] `R__012_seed_critical_values.sql` — 18 critical value references
 
-**Work required:**
-- [ ] `V20260318_0020__seed_departments.sql` — INSERT 11 standard lab departments:
-  - Biochemistry, Hematology, Microbiology, Histopathology, Clinical Pathology, Serology, Immunology, Molecular Biology, Blood Bank, Endocrinology, Cytology
-- [ ] `V20260318_0021__seed_antibiotics.sql` — INSERT ~50 common antibiotics (CLSI categories: Penicillins, Cephalosporins, Carbapenems, Fluoroquinolones, Aminoglycosides, Macrolides, Tetracyclines, etc.)
-- [ ] `V20260318_0022__seed_microorganisms.sql` — INSERT ~100 common microorganisms grouped by Gram-positive, Gram-negative, Anaerobes, Fungi, Parasites
-- [ ] Corresponding rollback scripts (DELETE by name/code) for each seed file
-
-**Files to create:** 6 SQL files (3 forward + 3 rollback)
+All seeds use `ON CONFLICT … DO NOTHING` or `WHERE NOT EXISTS` for idempotency.
 
 ---
 
@@ -527,8 +520,8 @@ Based on `docs/process-flows/complete-lipid-cbc-walkthrough.md`:
 - [ ] TASK-P2-02: Backend entity `ReportTemplate` (full CRUD stack + migration + test)
 - [ ] TASK-P2-03: Backend entity `DiscountScheme` (full CRUD stack + migration + test)
 - [ ] TASK-P2-04: Backend entity `InsuranceTariff` (full CRUD stack + migration + test)
-- [ ] TASK-P2-05: Backend entities `Role` and `Permission` + AppUser link + Keycloak sync
-- [ ] TASK-P2-06: Seed data migrations (11 departments, ~50 antibiotics, ~100 microorganisms)
+- [x] ~~TASK-P2-05: Backend entities `Role` and `Permission` + AppUser link + Keycloak sync~~ ✅ **DONE (PR #16)**
+- [x] ~~TASK-P2-06: Seed data migrations (11 departments, antibiotics, microorganisms)~~ ✅ **DONE (PR #16 — R__001–R__012)**
 
 **P1 — High Priority**
 - [ ] TASK-P2-07: Backend test coverage 29% → 80% (add 15 service unit tests)
@@ -577,9 +570,9 @@ Based on `docs/process-flows/complete-lipid-cbc-walkthrough.md`:
 | Task | Owner | Effort |
 |------|-------|--------|
 | TASK-P2-01 to P2-04 | Backend Dev | 4 × 1 day = 4 days |
-| TASK-P2-05 (Role/Permission) | Backend Dev | 2 days |
-| TASK-P2-06 (Seed data) | Backend Dev | 1 day |
-| **Sprint 1 Total** | | **~7 backend days** |
+| ~~TASK-P2-05 (Role/Permission)~~ | ✅ Done (PR #16) | — |
+| ~~TASK-P2-06 (Seed data)~~ | ✅ Done (PR #16) | — |
+| **Sprint 1 Total** | | **~4 backend days** |
 
 ### Sprint 2 (Week 3-4): Phase 2 Quality & Phase 3 Setup
 | Task | Owner | Effort |
