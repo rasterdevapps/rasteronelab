@@ -49,7 +49,7 @@ All 15 issues (LIS-001 to LIS-015) are fully implemented and verified. See [phas
 
 ## 🟡 Phase 2 — Administration Module (In Progress, ~85%)
 
-**18 issues (LIS-016 to LIS-033).** Core CRUD APIs, 42 frontend components, and 26 Flyway migrations are implemented. Blocked by 5 missing backend entities, no seed data, and insufficient test coverage.
+**18 issues (LIS-016 to LIS-033).** Core CRUD APIs, 42 frontend components, and 26 Flyway migrations are implemented. Blocked by 5 missing backend entities (excluding Role/Permission now added) and insufficient test coverage.
 
 See [phase-2-status-review.md](milestones/phase-2-status-review.md) for full gap analysis.
 
@@ -57,27 +57,30 @@ See [phase-2-status-review.md](milestones/phase-2-status-review.md) for full gap
 |-------|-------|--------|
 | LIS-016 | Organization CRUD API | ✅ Done |
 | LIS-017 | Branch Management CRUD API | ✅ Done |
-| LIS-018 | Department Management CRUD API | 🟡 Missing seed data |
+| LIS-018 | Department Management CRUD API | ✅ Seed data added (R__001) |
 | LIS-019 | Test Master CRUD API | ✅ Done |
 | LIS-020 | Parameter Master CRUD API | ✅ Done |
 | LIS-021 | Reference Range Config API | ✅ Done |
 | LIS-022 | Test Panel Management API | ✅ Done |
 | LIS-023 | Price Catalog Management API | ✅ Done |
 | LIS-024 | Doctor Management CRUD API | ✅ Done |
-| LIS-025 | User Management + Keycloak | 🟡 Keycloak sync not verified; no Role entity |
-| LIS-026 | Number Series, TAT, Working Hours | ✅ Done |
-| LIS-027 | Critical Value & Delta Check Config | ✅ Done |
-| LIS-028 | Antibiotic & Microorganism Masters | 🟡 Missing seed data |
+| LIS-025 | User Management + Keycloak | 🟡 Keycloak sync not verified; Role/Permission schema added |
+| LIS-026 | Number Series, TAT, Working Hours | ✅ Done (seed data added R__011) |
+| LIS-027 | Critical Value & Delta Check Config | ✅ Done (seed data added R__012) |
+| LIS-028 | Antibiotic & Microorganism Masters | ✅ Seed data added (R__003, R__004) |
 | LIS-029 | Branch Configuration Screen (Frontend) | ✅ Done |
 | LIS-030 | Test/Parameter Screens (Frontend) | ✅ Done |
 | LIS-031 | Doctor/User/Role Screens (Frontend) | ✅ Done |
-| LIS-032 | Configuration Screens (Frontend) | 🟡 5 screens lack backend APIs |
-| LIS-033 | Flyway Migrations for Phase 2 | 🟡 Missing seed data |
+| LIS-032 | Configuration Screens (Frontend) | 🟡 4 screens lack backend APIs (NotificationTemplate, DiscountScheme, InsuranceTariff missing) |
+| LIS-033 | Flyway Migrations for Phase 2 | ✅ Seed data migrations added (R__001–R__012) |
 
-**🔴 Critical Gaps (Phase 2 Blockers):**
-- 5 missing backend entities: `NotificationTemplate`, `ReportTemplate`, `DiscountScheme`, `InsuranceTariff`, `Role/Permission`
-- No seed data (departments, antibiotics, microorganisms)
+**🔴 Remaining Phase 2 Blockers:**
+- 4 missing backend entities: `NotificationTemplate`, `DiscountScheme`, `InsuranceTariff`, `ReportTemplate` (schema added, service/controller missing)
 - Test coverage ~29% (target: 80%)
+
+**✅ Resolved:**
+- ~~No seed data (departments, antibiotics, microorganisms)~~ — Added 12 Flyway repeatable seed migrations (R__001–R__012): departments, sample types, 60+ antibiotics, 80+ microorganisms, antibiotic panels, CLSI breakpoints, measurement units, roles & permissions, report templates, rejection reasons, number series, critical value references.
+- ~~No Role/Permission schema~~ — Added V20260318_0016__create_role_permission_tables.sql with Role, Permission, and RolePermission tables.
 
 ---
 
